@@ -12,9 +12,10 @@ func main() {
 	go scheduler.Start()
 
 	//HTTPルーティング
-	http.HandleFunc("/player", handlers.HandlePlayer)
+	http.HandleFunc("/player", handlers.HandlePlayer) //プレイヤー
 	//http.HandleFunc("/attack", handlers.HandleAttack)
-	http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)
+	http.HandleFunc("/leaderboard", handlers.HandleLeaderboard) //リーダーボード
+	http.HandleFunc("/build", handlers.BuildHandler)            //施設を建築する
 
 	log.Println("サーバー起動: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
