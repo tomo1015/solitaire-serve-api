@@ -14,6 +14,7 @@ type BuildRequest struct {
 	Name     string //建物名
 }
 
+// 施設を建築する
 func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	var req BuildRequest
 
@@ -26,7 +27,7 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 
 	//ストレージからプレイヤー情報を取得
 	player := storage.GetPlayer(req.PlayerID)
-	if player != nil {
+	if player == nil {
 		http.Error(w, "player is not found", http.StatusBadRequest)
 		return
 	}
@@ -44,4 +45,21 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	storage.SavePlayer(player)
 
 	json.NewEncoder(w).Encode(building)
+}
+
+// 施設一覧
+func BuildingListHandler(w http.ResponseWriter, r *http.Request) {
+	playerId := r.URL.Query().Get(("player_id"))
+	if playerId == "" {
+		http.Error(w, "player id is missing", http.StatusBadRequest)
+		return
+	}
+
+	player := storage.GetPlayer(playerId)
+	if player == nil {
+		http.Error(w, "player is not found", http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(player.Buildings)
 }
