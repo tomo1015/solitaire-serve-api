@@ -14,3 +14,13 @@ type Player struct {
 	Village   string     //村情報
 	Buildings []Building `json:"building"` //建物リスト
 }
+
+// 倉庫レベル用取得関数
+func (player *Player) GetWarehouseLevel() int {
+	for _, b := range player.Buildings {
+		if b.Name == "倉庫" {
+			return b.Level
+		}
+	}
+	return 0
+}
