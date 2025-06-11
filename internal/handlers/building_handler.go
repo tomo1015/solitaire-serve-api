@@ -10,13 +10,13 @@ import (
 )
 
 type BuildRequest struct {
-	PlayerID string //プレイヤーID
-	Name     string //建物名
+	PlayerID string `json:"player_id"` //プレイヤーID
+	Name     string `json:"name"`      //建物名
 }
 
 type UpgradeRequest struct {
-	PlayerID   string //プレイヤーID
-	BuildingID string //建物ID
+	PlayerID   string `json:"player_id"`   //プレイヤーID
+	BuildingID string `json:"building_id"` //建物ID
 }
 
 // 施設を建築する

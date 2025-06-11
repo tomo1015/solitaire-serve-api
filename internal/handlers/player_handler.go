@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"solitaire-serve-api/internal/models"
+	"solitaire-serve-api/internal/util"
 	"solitaire-serve-api/storage"
 )
 
@@ -11,11 +12,17 @@ func HandlePlayer(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		id := r.URL.Query().Get("id")
+
 		player := storage.GetPlayer(id)
 		if player == nil {
 			http.NotFound(w, r)
 			return
 		}
+
+		//プレイヤー取得時に資源を自動加算する
+		util.CollectResources(player)
+		storage.SavePlayer(player)
+
 		json.NewEncoder(w).Encode(player)
 	case "POST":
 		var p models.Player
