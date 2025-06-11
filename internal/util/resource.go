@@ -13,7 +13,17 @@ func CollectResources(player *models.Player) {
 	for _, b := range player.Buildings {
 		duration := now.Sub(b.LastCollected).Seconds()
 		earned := int(duration) * b.Production
-		player.Resources += earned
+
+		//施設ごとに資源をそれぞれ加算する
+		switch b.ResourceType {
+		case "wood":
+			player.Resources.Wood += earned
+		case "stone":
+			player.Resources.Stone += earned
+		case "gold":
+			player.Resources.Gold += earned
+		}
+
 		b.LastCollected = now
 	}
 }

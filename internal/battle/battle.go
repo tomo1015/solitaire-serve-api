@@ -13,8 +13,8 @@ func Attack(attackerID, defenderID string) string {
 	}
 
 	if attacker.Soldiers > defender.Soldiers {
-		attacker.Resources += 50
-		defender.Resources -= 30
+		attacker.Soldiers += 50
+		defender.Soldiers -= 30
 		return "win"
 	}
 

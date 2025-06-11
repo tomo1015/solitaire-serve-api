@@ -9,7 +9,16 @@ func Start() {
 	ticker := time.NewTicker(10 * time.Second)
 	for range ticker.C {
 		for _, p := range storage.Players {
-			p.Resources += 10 // 資源の自動増加
+			for _, b := range p.Buildings {
+				switch b.ResourceType {
+				case "wood":
+					p.Resources.Wood += b.Production
+				case "stone":
+					p.Resources.Stone += b.Production
+				case "gold":
+					p.Resources.Gold += b.Production
+				}
+			}
 		}
 	}
 }

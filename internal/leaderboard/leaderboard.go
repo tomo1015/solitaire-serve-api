@@ -13,7 +13,8 @@ type Entry struct {
 func GetLeaderboard() []Entry {
 	entries := []Entry{}
 	for id, p := range storage.Players {
-		entries = append(entries, Entry{ID: id, Resources: p.Resources})
+		//TODO：リーダーボードは村の発展力に変更
+		entries = append(entries, Entry{ID: id, Resources: p.Soldiers})
 	}
 
 	sort.Slice(entries, func(i, j int) bool {

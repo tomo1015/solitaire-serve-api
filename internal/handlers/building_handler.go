@@ -41,23 +41,45 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	//初期レベルの建設コスト計算
 	tmpBuilding := models.Building{Name: req.Name, Level: 1}
 	cost := tmpBuilding.UpgradeCost()
-	if player.Resources < cost {
-		http.Error(w, "resources not enough", http.StatusBadRequest)
-		return
-	}
+	//コストの消費
+	switch tmpBuilding.ResourceType {
+	case "wood":
+		if player.Resources.Wood < cost {
+			http.Error(w, "resources not enough", http.StatusBadRequest)
+			return
+		}
 
-	//コストの減算
-	player.Resources -= cost
+		player.Resources.Wood -= cost
+
+	case "stone":
+		if player.Resources.Stone < cost {
+			http.Error(w, "resources not enough", http.StatusBadRequest)
+			return
+		}
+		player.Resources.Stone -= cost
+
+	case "gold":
+		if player.Resources.Gold < cost {
+			http.Error(w, "resources not enough", http.StatusBadRequest)
+			return
+		}
+
+		player.Resources.Gold -= cost
+	}
 
 	//建築時に施設ごとの生産量を設定
 	production := 1
+	resource_type := "wood"
 	switch req.Name {
 	case "木材工場":
 		production = 5
+		resource_type = "wood"
 	case "石材工場":
 		production = 3
+		resource_type = "stone"
 	case "金鉱山":
 		production = 2
+		resource_type = "gold"
 	}
 
 	//建築する建物情報をまとめる
@@ -67,6 +89,7 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 		Level:         1,
 		Position:      len(player.Buildings),
 		Production:    production,
+		ResourceType:  resource_type,
 		LastCollected: time.Now(),
 	}
 
@@ -126,13 +149,33 @@ func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
 
 	//アップグレードのコスト計算
 	cost := building.UpgradeCost()
-	if player.Resources < cost {
-		http.Error(w, "resources not enough", http.StatusBadRequest)
-		return
+	//コストの消費
+	switch building.ResourceType {
+	case "wood":
+		if player.Resources.Wood < cost {
+			http.Error(w, "resources not enough", http.StatusBadRequest)
+			return
+		}
+
+		player.Resources.Wood -= cost
+
+	case "stone":
+		if player.Resources.Stone < cost {
+			http.Error(w, "resources not enough", http.StatusBadRequest)
+			return
+		}
+		player.Resources.Stone -= cost
+
+	case "gold":
+		if player.Resources.Gold < cost {
+			http.Error(w, "resources not enough", http.StatusBadRequest)
+			return
+		}
+
+		player.Resources.Gold -= cost
 	}
 
-	//コストの消費とレベルアップ
-	player.Resources -= cost
+	//施設のレベルアップ
 	building.Level += 1
 	storage.SavePlayer(player)
 
