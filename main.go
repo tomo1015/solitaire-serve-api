@@ -14,9 +14,10 @@ func main() {
 	//HTTPルーティング
 	http.HandleFunc("/player", handlers.HandlePlayer) //プレイヤー
 	//http.HandleFunc("/attack", handlers.HandleAttack)
-	http.HandleFunc("/leaderboard", handlers.HandleLeaderboard) //リーダーボード
-	http.HandleFunc("/build", handlers.BuildHandler)            //施設を建築する
-	http.HandleFunc("/list", handlers.BuildingListHandler)      // 施設一覧
+	http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
+	http.HandleFunc("/build", handlers.BuildHandler)             //施設を建築する
+	http.HandleFunc("/list", handlers.BuildingListHandler)       // 施設一覧
+	http.HandleFunc("/upgrade", handlers.UpgradeBuildingHandler) //施設のアップグレード
 
 	log.Println("サーバー起動: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

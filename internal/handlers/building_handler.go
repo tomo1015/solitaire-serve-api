@@ -14,6 +14,11 @@ type BuildRequest struct {
 	Name     string //建物名
 }
 
+type UpgradeRequest struct {
+	PlayerID   string //プレイヤーID
+	BuildingID string //建物ID
+}
+
 // 施設を建築する
 func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	var req BuildRequest
@@ -31,6 +36,17 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "player is not found", http.StatusBadRequest)
 		return
 	}
+
+	//初期レベルの建設コスト計算
+	tmpBuilding := models.Building{Name: req.Name, Level: 1}
+	cost := tmpBuilding.UpgradeCost()
+	if player.Resources < cost {
+		http.Error(w, "resources not enough", http.StatusBadRequest)
+		return
+	}
+
+	//コストの減算
+	player.Resources -= cost
 
 	//建築する建物情報をまとめる
 	building := models.Building{
@@ -62,4 +78,49 @@ func BuildingListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(player.Buildings)
+}
+
+// 施設アップグレード
+func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
+	var req UpgradeRequest
+	//リクエストパラメータのチェック
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid Request", http.StatusBadRequest)
+		return
+	}
+
+	//プレイヤー情報を取得
+	player := storage.GetPlayer(req.PlayerID)
+	if player == nil {
+		http.Error(w, "player is not found", http.StatusBadRequest)
+		return
+	}
+
+	//プレイヤーの建物情報を取得
+	var building *models.Building
+	for i := range player.Buildings {
+		if player.Buildings[i].ID == req.BuildingID {
+			building = &player.Buildings[i]
+			break
+		}
+	}
+
+	if building == nil {
+		http.Error(w, "building not found", http.StatusBadRequest)
+		return
+	}
+
+	//アップグレードのコスト計算
+	cost := building.UpgradeCost()
+	if player.Resources < cost {
+		http.Error(w, "resources not enough", http.StatusBadRequest)
+		return
+	}
+
+	//コストの消費とレベルアップ
+	player.Resources -= cost
+	building.Level += 1
+	storage.SavePlayer(player)
+
+	json.NewEncoder(w).Encode(building)
 }

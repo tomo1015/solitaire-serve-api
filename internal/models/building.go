@@ -6,3 +6,8 @@ type Building struct {
 	Level    int    //施設レベル（初期1)
 	Position int    //建物の位置
 }
+
+// 建設/アップグレード時のコスト計算
+func (b *Building) UpgradeCost() int {
+	return 100 * b.Level
+}
