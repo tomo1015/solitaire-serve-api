@@ -8,9 +8,9 @@ type Resources struct {
 
 type Player struct {
 	ID        string     //ユーザーID
-	Name      string     //ユーザー名
+	Name      string     `json:"name"`      //ユーザー名
 	Resources Resources  `json:"resources"` //資源情報
-	Soldiers  int        //兵士情報
+	Soldiers  []*Soldier `json:"soldiers"`  //兵士情報
 	Village   string     //村情報
 	Buildings []Building `json:"building"` //建物リスト
 }

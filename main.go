@@ -18,6 +18,8 @@ func main() {
 	http.HandleFunc("/build", handlers.BuildHandler)             //施設を建築する
 	http.HandleFunc("/list", handlers.BuildingListHandler)       // 施設一覧
 	http.HandleFunc("/upgrade", handlers.UpgradeBuildingHandler) //施設のアップグレード
+	http.HandleFunc("/soldier", handlers.GetSoldiersHandler)     //兵士一覧
+	http.HandleFunc("/soldier/upgrade", handlers.TrainHandler)   //兵士の訓練
 
 	log.Println("サーバー起動: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
