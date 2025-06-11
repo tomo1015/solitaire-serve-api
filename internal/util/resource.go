@@ -8,20 +8,12 @@ import (
 const GainPerSecondPerBuilding = 1
 
 func CollectResources(player *models.Player) {
-	now := time.Now().Unix()
+	now := time.Now()
 
-	if player.LastCollected == 0 {
-		player.LastCollected = now
-		return
+	for _, b := range player.Buildings {
+		duration := now.Sub(b.LastCollected).Seconds()
+		earned := int(duration) * b.Production
+		player.Resources += earned
+		b.LastCollected = now
 	}
-
-	elapsed := now - player.LastCollected
-	if elapsed <= 0 {
-		return
-	}
-
-	//施設数 * 経過秒数 * 係数
-	totalGain := int(elapsed) * len(player.Buildings) * GainPerSecondPerBuilding
-	player.Resources += totalGain
-	player.LastCollected = now
 }

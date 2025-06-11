@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"solitaire-serve-api/internal/models"
 	"solitaire-serve-api/storage"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -48,12 +49,25 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	//コストの減算
 	player.Resources -= cost
 
+	//建築時に施設ごとの生産量を設定
+	production := 1
+	switch req.Name {
+	case "木材工場":
+		production = 5
+	case "石材工場":
+		production = 3
+	case "金鉱山":
+		production = 2
+	}
+
 	//建築する建物情報をまとめる
 	building := models.Building{
-		ID:       uuid.NewString(),
-		Name:     req.Name,
-		Level:    1,
-		Position: len(player.Buildings),
+		ID:            uuid.NewString(),
+		Name:          req.Name,
+		Level:         1,
+		Position:      len(player.Buildings),
+		Production:    production,
+		LastCollected: time.Now(),
 	}
 
 	//リストに追加した上で保存実施
