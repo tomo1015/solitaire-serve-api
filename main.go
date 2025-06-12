@@ -5,16 +5,20 @@ import (
 	"net/http"
 	"solitaire-serve-api/internal/handlers"
 	"solitaire-serve-api/internal/scheduler"
+	"solitaire-serve-api/storage"
 )
 
 func main() {
 	//スケジューラー起動
 	go scheduler.Start()
 
+	//防衛地点データをjsonから読み込む
+	storage.LoadDefensePointFromJson("data/defense_point.json")
+
 	//HTTPルーティング
 	http.HandleFunc("/player", handlers.HandlePlayer) //プレイヤー
 	//http.HandleFunc("/attack", handlers.HandleAttack)
-	http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
+	//http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
 	http.HandleFunc("/build", handlers.BuildHandler)             //施設を建築する
 	http.HandleFunc("/list", handlers.BuildingListHandler)       // 施設一覧
 	http.HandleFunc("/upgrade", handlers.UpgradeBuildingHandler) //施設のアップグレード

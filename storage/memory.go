@@ -5,7 +5,9 @@ import (
 	"sync"
 )
 
-var Players = make(map[string]*models.Player)
+var Players = make(map[string]*models.Player) //プレイヤー情報
+var Attacks []*models.Attack                  //攻撃情報
+var DefensePoints []*models.DefensePoint      //防衛拠点の位置
 var mu sync.Mutex
 
 func GetPlayer(id string) *models.Player {
