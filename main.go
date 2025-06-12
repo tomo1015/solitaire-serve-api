@@ -3,12 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
+	"solitaire-serve-api/internal/db"
 	"solitaire-serve-api/internal/handlers"
 	"solitaire-serve-api/internal/scheduler"
 	"solitaire-serve-api/storage"
 )
 
 func main() {
+	//DB接続の追加
+	db.Init()
+
 	//スケジューラー起動
 	go scheduler.Start()
 
