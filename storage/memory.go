@@ -21,3 +21,14 @@ func SavePlayer(p *models.Player) {
 	defer mu.Unlock()
 	Players[p.ID] = p
 }
+
+// 指定された座標に存在する防衛拠点を検索する
+func FindDefensePointByLocation(x, y int) *models.DefensePoint {
+	for _, dp := range DefensePoints {
+		if dp.Location.X == x && dp.Location.Y == y {
+			return dp
+		}
+	}
+
+	return nil
+}

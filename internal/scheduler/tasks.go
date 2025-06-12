@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"solitaire-serve-api/internal/battle"
 	"solitaire-serve-api/storage"
 	"time"
 )
@@ -32,5 +33,25 @@ func Start() {
 				}
 			}
 		}
+
+		//予約中のバトル処理を順番に実行
+		AllBattles()
+	}
+}
+
+func AllBattles() {
+	for _, atk := range storage.Attacks {
+		if atk.Processed {
+			continue
+		}
+
+		player := storage.GetPlayer(atk.AttackerID)
+		defense := storage.FindDefensePointByLocation(atk.Target.X, atk.Target.Y)
+
+		if player == nil || defense == nil {
+			continue
+		}
+
+		battle.ResolveBattle(atk, player, defense)
 	}
 }

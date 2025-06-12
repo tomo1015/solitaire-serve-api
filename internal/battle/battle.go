@@ -4,7 +4,7 @@ import (
 	"solitaire-serve-api/internal/models"
 )
 
-func resolveBattle(atk *models.Attack, player *models.Player, defense *models.DefensePoint) {
+func ResolveBattle(atk *models.Attack, player *models.Player, defense *models.DefensePoint) {
 	attackPower := calcTotalPower(atk.Soldiers)
 	defensePower := calcTotalPower(defense.Soldiers)
 
