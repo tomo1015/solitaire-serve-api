@@ -8,8 +8,7 @@ Goを用いて設計・実装しました。<br>
 
 ## 🛠 使用技術 / Tech Stack
 - Go 1.24.4
-- MySQL
-- Redis
+- SQLite
 
 ---
 
