@@ -20,5 +20,5 @@ func Init() {
 	log.Println("DB接続成功")
 
 	//テーブル作成の実行
-	DB.AutoMigrate(&models.Player{}, &models.Building{}, &models.Attack{})
+	DB.AutoMigrate(&models.Player{}, &models.Building{}, &models.Attack{}, &models.DefensePoint{}, &models.Soldier{})
 }
