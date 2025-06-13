@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"solitaire-serve-api/internal/models"
 	"solitaire-serve-api/storage"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type TrainRequest struct {
@@ -37,7 +37,6 @@ func TrainHandler(w http.ResponseWriter, r *http.Request) {
 	trainDuration := int64(60) //60秒の訓練時間
 
 	soldier := &models.Soldier{
-		ID:          uuid.New().String(),
 		Type:        req.Type,
 		Level:       1,
 		Quantity:    req.Quantity,
@@ -45,7 +44,17 @@ func TrainHandler(w http.ResponseWriter, r *http.Request) {
 		TrainingEnd: now + trainDuration,
 	}
 
-	player.Soldiers = append(player.Soldiers, soldier)
+	//DBに追加
+	db, err := sql.Open("sqlite3", "db/game.sqlite") //DBは指定フォルダにあるもの
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	if err := insertSoldier(db, soldier); err != nil {
+		panic(err)
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("training started"))
 }
@@ -59,4 +68,25 @@ func GetSoldiersHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+}
+
+// DBに情報を追加
+func insertSoldier(db *sql.DB, soldier *models.Soldier) error {
+	result, err := db.Exec(
+		`INSERT INTO soldiers (type, level, quantity, training, training_end) VALUES (?, ?, ?, ?, ?)`,
+		soldier.Type, soldier.Level, soldier.Quantity, soldier.Training, soldier.TrainingEnd,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	soldier.ID = int(id) // 自動採番されたIDを構造体にセット
+	fmt.Printf("Inserted soldier with ID: %d\n", soldier.ID)
+	return nil
 }

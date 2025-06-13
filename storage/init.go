@@ -9,12 +9,12 @@ import (
 )
 
 type rawDefensePoint struct {
-	Name       string           `json:"name"`
-	Location   models.WorldMap  `json:"location"`
-	Type       string           `json:"type"`
-	Difficulty int              `json:"difficulty"`
-	Soldiers   []models.Soldier `json:"soldiers"`
-	Loot       map[string]int   `json:"loot"`
+	Name       string                 `json:"name"`
+	Location   models.WorldMap        `json:"location"`
+	Type       string                 `json:"type"`
+	Difficulty int                    `json:"difficulty"`
+	Soldiers   []models.BattleSoldier `json:"soldiers"`
+	Loot       map[string]int         `json:"loot"`
 }
 
 func LoadDefensePointFromJson(filepath string) error {
@@ -37,7 +37,7 @@ func LoadDefensePointFromJson(filepath string) error {
 			continue
 		}
 
-		soldiers := make([]*models.Soldier, len(r.Soldiers))
+		soldiers := make([]*models.BattleSoldier, len(r.Soldiers))
 		for i := range r.Soldiers {
 			soldiers[i] = &r.Soldiers[i]
 		}
@@ -58,7 +58,7 @@ func LoadDefensePointFromJson(filepath string) error {
 
 		// 兵士情報も登録
 		for _, s := range r.Soldiers {
-			soldier := models.Soldier{
+			soldier := models.BattleSoldier{
 				ID:       dp.ID,
 				Type:     s.Type,
 				Level:    s.Level,

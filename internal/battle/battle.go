@@ -1,14 +1,24 @@
 package battle
 
 import (
+	"math/rand/v2"
 	"solitaire-serve-api/internal/models"
 )
 
-func ResolveBattle(atk *models.Attack, player *models.Player, defense *models.DefensePoint) {
-	attackPower := calcTotalPower(atk.Soldiers)
-	defensePower := calcTotalPower(defense.Soldiers)
+func ResolveBattle(attack *models.Attack, player *models.Player, defense *models.DefensePoint) {
 
-	if attackPower > defensePower {
+	attackDamage := 0
+	defenseDamage := 0
+
+	//攻撃予約として設定された情報をもとに戦闘
+	for _, attackSoldier := range attack.BattleSoldier {
+		for _, defenseSoldier := range defense.Soldiers {
+			dmg := calcDamage(attackSoldier, defenseSoldier) * attackSoldier.Quantity
+			attackDamage += dmg
+		}
+	}
+
+	if attackDamage > defenseDamage {
 		//勝利したので資源を獲得
 		switch defense.LocationType {
 		case "forest":
@@ -18,19 +28,41 @@ func ResolveBattle(atk *models.Attack, player *models.Player, defense *models.De
 		case "gold":
 			player.Resources.Gold += defense.Loot.Gold
 		}
-		atk.Result = "win"
+
+		//勝利したので戦果を獲得(=リーダーボードのランキング付けに使用)
+		player.Point += 100
+
+		attack.Result = "win"
 	} else {
-		atk.Result = "lose"
+		//敗北したのでポイントの獲得はなし
+		player.Point += 0
+
+		attack.Result = "lose"
 	}
 
-	atk.Processed = true
+	attack.Processed = true
 }
 
-// 兵士の戦力計算関数
-func calcTotalPower(soldiers []*models.Soldier) int {
-	power := 0
-	for _, s := range soldiers {
-		power += s.Quantity * s.Level //戦力 = 敵 × レベル
+func calcDamage(attacker, defender *models.BattleSoldier) int {
+	//命中判定
+	if rand.Float64() > attacker.HitRate {
+		return 0
 	}
-	return power
+
+	// 基本ダメージ = 合計攻撃力 - 合計防御力（ダメージ0もあり）
+	var totalAttackPower = attacker.Attack
+	var totalDefensePower = defender.Defense
+
+	baseDamage := totalAttackPower - totalDefensePower
+	if baseDamage < 0 {
+		return 0 //ダメージを与えられなかった
+	}
+
+	//クリティカル判定
+	critMultiplier := 1.0
+	if rand.Float64() < attacker.CritRate {
+		critMultiplier = 1.5
+	}
+
+	return int(float64(baseDamage) * critMultiplier)
 }

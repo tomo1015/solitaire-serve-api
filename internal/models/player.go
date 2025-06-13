@@ -11,6 +11,7 @@ type Player struct {
 	Name      string     `json:"name"`      //ユーザー名
 	Resources Resources  `json:"resources"` //資源情報
 	Soldiers  []*Soldier `json:"soldiers"`  //兵士情報
+	Point     int        `json:"point"`     //戦果ポイント
 	Village   string     //村情報
 	Buildings []Building `json:"building"` //建物リスト
 }
@@ -23,4 +24,14 @@ func (player *Player) GetWarehouseLevel() int {
 		}
 	}
 	return 0
+}
+
+// 兵士情報を取得する関数
+func (player *Player) FindSoldier(soldierID int) *Soldier {
+	for i := range player.Soldiers {
+		if player.Soldiers[i].ID == soldierID {
+			return player.Soldiers[i] //この時点でポインタなのでそのまま書くことができる
+		}
+	}
+	return nil
 }
