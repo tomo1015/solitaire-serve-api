@@ -1,22 +1,14 @@
 [
   {
+    "point_id":1,
     "name": "森の砦",
     "location": { "x": 10, "y": 5 },
-    "type": "forest",
-    "difficulty": 1,
+    "npc_name":"盗賊1",
     "soldiers": [
       { "type": "infantry", "level": 1, "quantity": 20 }
     ],
-    "loot": { "wood": 100, "stone": 20, "gold": 5 }
-  },
-  {
-    "name": "石切り場の塔",
-    "location": { "x": 20, "y": 15 },
-    "type": "quarry",
-    "difficulty": 2,
-    "soldiers": [
-      { "type": "infantry", "level": 2, "quantity": 30 }
-    ],
-    "loot": { "wood": 10, "stone": 120, "gold": 10 }
+    "type": "forest",
+    "loot": { "wood": 100, "stone": 20, "gold": 5 },
+    "difficulty": 1
   }
 ]

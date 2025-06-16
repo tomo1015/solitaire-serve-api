@@ -9,12 +9,14 @@ import (
 )
 
 type rawDefensePoint struct {
-	Name       string                 `json:"name"`
-	Location   models.WorldMap        `json:"location"`
-	Type       string                 `json:"type"`
-	Difficulty int                    `json:"difficulty"`
-	Soldiers   []models.BattleSoldier `json:"soldiers"`
-	Loot       map[string]int         `json:"loot"`
+	ID           int                    `json:"point_id"`
+	Name         string                 `json:"name"`
+	Location     models.WorldMap        `json:"location"`
+	NPCName      string                 `json:"npc_name"`
+	Soldiers     []models.BattleSoldier `json:"soldiers"`
+	LocationType string                 `json:"type"`
+	Loot         models.Resources       `json:"loot"`
+	Difficulty   int                    `json:"difficulty"`
 }
 
 func LoadDefensePointFromJson(filepath string) error {
@@ -43,12 +45,15 @@ func LoadDefensePointFromJson(filepath string) error {
 		}
 
 		dp := models.DefensePoint{
+			ID:           r.ID,
 			Name:         r.Name,
-			LocationType: r.Type,
-			Difficulty:   r.Difficulty,
 			Location:     r.Location,
-			LootJson:     string(lootBytes),
+			NPCName:      r.NPCName,
 			Soldiers:     soldiers,
+			Loot:         r.Loot,
+			LootJson:     string(lootBytes),
+			LocationType: r.LocationType,
+			Difficulty:   r.Difficulty,
 		}
 
 		if err := db.DB.Create(&dp).Error; err != nil {

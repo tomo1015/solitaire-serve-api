@@ -20,7 +20,8 @@ func main() {
 	storage.LoadDefensePointFromJson("data/defense_point.json")
 
 	//HTTPルーティング
-	http.HandleFunc("/player", handlers.HandlePlayer) //プレイヤー
+	http.HandleFunc("/getGameToken", handlers.GetGameTokenHandler) //ゲームトークン取得
+	http.HandleFunc("/player", handlers.HandlePlayer)              //プレイヤー取得
 	//http.HandleFunc("/attack", handlers.HandleAttack)
 	//http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
 	http.HandleFunc("/build", handlers.BuildHandler)             //施設を建築する
