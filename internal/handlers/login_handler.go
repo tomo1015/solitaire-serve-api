@@ -56,7 +56,7 @@ func GetSessionForPlatformId(platformId int) models.Session {
 	var session models.Session
 	//プラットフォームIDでのセッション情報が存在する場合は
 	//そのデータを返す
-	result := db.DB.Where("platform_id = ?", platformId).First(&session)
+	result := db.DB.Where("PlatFormID = ?", platformId).First(&session)
 
 	if result.Error == nil {
 		//データがあるのでそのSession情報を返す

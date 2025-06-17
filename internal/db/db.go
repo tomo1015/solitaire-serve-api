@@ -20,5 +20,10 @@ func Init() {
 
 	log.Println("DB接続成功")
 
-	DB.AutoMigrate(&models.DefensePoint{}, &models.BattleSoldier{}, &models.Resources{})
+	DB.AutoMigrate(
+		&models.Session{},
+		&models.DefensePoint{},
+		&models.BattleSoldier{},
+		&models.Resources{},
+		&models.Building{})
 }
