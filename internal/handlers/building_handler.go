@@ -11,16 +11,10 @@ import (
 )
 
 type BuildRequest struct {
-	PlayerID string `json:"player_id"` //プレイヤーID
-	Name     string `json:"name"`      //建物名
-}
-
-type FacilityListRequest struct {
-	PlayerID string `json:"player_id"`
+	Name string `json:"name"` //建物名
 }
 
 type UpgradeRequest struct {
-	PlayerID   string `json:"player_id"`   //プレイヤーID
 	BuildingID string `json:"building_id"` //建物ID
 }
 
@@ -42,7 +36,7 @@ func FacilityHandler(c *gin.Context) {
 	}
 
 	//ストレージからプレイヤー情報を取得
-	player := storage.GetPlayer(req.PlayerID)
+	player := storage.GetPlayer(playerId)
 	if player == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return
@@ -115,19 +109,11 @@ func FacilityHandler(c *gin.Context) {
 // @Tags facility
 // @Accept json
 // @Produce json
-// @Param body body FacilityListRequest true "PlayerID"
 // @Success 200 {object} models.Building "facilities"
 // @Failure 400 {string} string "invalid request or player is not found"
 // @Router /facility/list [post]
 func FacilityListHandler(c *gin.Context) {
-	var req FacilityListRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		//必要な情報がないのでエラー
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
-		return
-	}
-
-	player := storage.GetPlayer(req.PlayerID)
+	player := storage.GetPlayer(playerId)
 	if player == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return
@@ -154,7 +140,7 @@ func UpgradeFacilityHandler(c *gin.Context) {
 	}
 
 	//プレイヤー情報を取得
-	player := storage.GetPlayer(req.PlayerID)
+	player := storage.GetPlayer(playerId)
 	if player == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return

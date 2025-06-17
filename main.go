@@ -38,13 +38,13 @@ func main() {
 	r.POST("/facility/create", handlers.FacilityHandler)
 	r.POST("/facility/list", handlers.FacilityListHandler)
 	r.POST("/facility/upgrade", handlers.UpgradeFacilityHandler)
+	r.POST("/soldier/list", handlers.GetSoldiersHandler)
+	r.POST("/soldier/training", handlers.TrainHandler)
 
 	//HTTPルーティング
 	// http.HandleFunc("/player", handlers.HandlePlayer)              //プレイヤー取得
 	// //http.HandleFunc("/attack", handlers.HandleAttack)
 	// //http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
-	// http.HandleFunc("/soldier", handlers.GetSoldiersHandler)     //兵士一覧
-	// http.HandleFunc("/soldier/upgrade", handlers.TrainHandler)   //兵士の訓練
 
 	log.Println("サーバー起動: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

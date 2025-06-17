@@ -143,6 +143,15 @@ solitaire-serve-api/
 - http://localhost:8080/swagger/index.html#/
 ---
 
+## API実行方法
+
+- ゲームトークン発行
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"platformId":123}' http://localhost:8080/getGameToken
+```
+---
+
 ## 👤 担当範囲 / My Role
 - 全て担当
 

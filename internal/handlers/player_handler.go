@@ -11,9 +11,7 @@ import (
 func HandlePlayer(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		id := r.URL.Query().Get("id")
-
-		player := storage.GetPlayer(id)
+		player := storage.GetPlayer(playerId)
 		if player == nil {
 			http.NotFound(w, r)
 			return

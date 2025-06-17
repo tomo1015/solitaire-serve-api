@@ -15,6 +15,8 @@ type GetGameTokenRequest struct {
 	PlatFormID int `json:"platformId"`
 }
 
+var playerId int //ユーザーID
+
 // @Summary ゲームトークン取得
 // @Description プラットフォームIDに対応した接続情報を作成し、ゲームトークンを生成する
 // @Tags login
@@ -44,6 +46,7 @@ func GetGameTokenHandler(c *gin.Context) {
 		return
 	}
 
+	playerId = session.UserID
 	c.JSON(http.StatusOK, gin.H{"game_token": session.GameToken})
 }
 
@@ -53,7 +56,7 @@ func GetSessionForPlatformId(platformId int) models.Session {
 	var session models.Session
 	//プラットフォームIDでのセッション情報が存在する場合は
 	//そのデータを返す
-	result := db.DB.Where("platform_id = ?", platformId).First(&session)
+	result := db.DB.Where("PlatFormID = ?", platformId).First(&session)
 
 	if result.Error == nil {
 		//データがあるのでそのSession情報を返す
@@ -73,6 +76,9 @@ func GetSessionForPlatformId(platformId int) models.Session {
 	if err := db.DB.Create(&newSession).Error; err != nil {
 		return models.Session{}
 	}
+
+	//生成されたuser_idを取得
+	playerId = newSession.UserID
 
 	//シャードキー生成
 	newSession.ShardKey = GetShardKeyForUserId(newSession.UserID)
