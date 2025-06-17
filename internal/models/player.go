@@ -20,7 +20,7 @@ type Player struct {
 // 倉庫レベル用取得関数
 func (player *Player) GetWarehouseLevel() int {
 	for _, b := range player.Buildings {
-		if b.Name == "倉庫" {
+		if b.BuildingID == 10 {
 			return b.Level
 		}
 	}
