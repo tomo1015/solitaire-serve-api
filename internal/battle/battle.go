@@ -19,15 +19,15 @@ func ResolveBattle(attack *models.Attack, player *models.Player, defense *models
 	}
 
 	if attackDamage > defenseDamage {
-		//勝利したので資源を獲得
-		switch defense.LocationType {
-		case "forest":
-			player.Resources.Wood += defense.Loot.Wood
-		case "quarry":
-			player.Resources.Stone += defense.Loot.Stone
-		case "gold":
-			player.Resources.Gold += defense.Loot.Gold
-		}
+		// //勝利したので資源を獲得
+		// switch defense.LocationType {
+		// case "forest":
+		// 	player.Resources.Wood += defense.Loot.Wood
+		// case "quarry":
+		// 	player.Resources.Stone += defense.Loot.Stone
+		// case "gold":
+		// 	player.Resources.Gold += defense.Loot.Gold
+		// }
 
 		//勝利したので戦果を獲得(=リーダーボードのランキング付けに使用)
 		player.Point += 100

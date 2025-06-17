@@ -1,0 +1,153 @@
+definitions:
+  handlers.BuildRequest:
+    properties:
+      name:
+        description: 建物名
+        type: string
+      player_id:
+        description: プレイヤーID
+        type: string
+    type: object
+  handlers.FacilityListRequest:
+    properties:
+      player_id:
+        type: string
+    type: object
+  handlers.GetGameTokenRequest:
+    properties:
+      platformId:
+        type: integer
+    type: object
+  models.Building:
+    properties:
+      id:
+        description: 一意なID（建設時に発行）
+        type: string
+      last_collected:
+        type: string
+      level:
+        description: 施設レベル（初期1)
+        type: integer
+      name:
+        description: 施設名
+        type: string
+      position:
+        description: 建物の位置
+        type: integer
+      production:
+        description: 施設ごとの生産量
+        type: integer
+      resource_type:
+        description: 施設ごとに生産できる資源タイプ
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /facility/create:
+    post:
+      consumes:
+      - application/json
+      description: プレイヤーが所持している資源を消費して施設の建築を実行する
+      parameters:
+      - description: PlayerID
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.BuildRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: facilities
+          schema:
+            $ref: '#/definitions/models.Building'
+        "400":
+          description: invalid request or player is not found or resources not enough
+          schema:
+            type: string
+      summary: 施設の建築を実行する
+      tags:
+      - facility
+  /facility/list:
+    post:
+      consumes:
+      - application/json
+      description: プレイヤーが建築済みの施設を一覧で取得する
+      parameters:
+      - description: PlayerID
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.FacilityListRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: facilities
+          schema:
+            $ref: '#/definitions/models.Building'
+        "400":
+          description: invalid request or player is not found
+          schema:
+            type: string
+      summary: 施設一覧
+      tags:
+      - facility
+  /facility/upgrade:
+    post:
+      consumes:
+      - application/json
+      description: 施設のレベルアップを行う
+      parameters:
+      - description: PlayerID
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.FacilityListRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: facilities
+          schema:
+            $ref: '#/definitions/models.Building'
+        "400":
+          description: invalid request or player is not found
+          schema:
+            type: string
+      summary: 施設アップグレード
+      tags:
+      - facility
+  /getGameToken:
+    post:
+      consumes:
+      - application/json
+      description: プラットフォームIDに対応した接続情報を作成し、ゲームトークンを生成する
+      parameters:
+      - description: Platform ID
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.GetGameTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: game_token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: bad Request or update Failed
+          schema:
+            type: string
+      summary: ゲームトークン取得
+      tags:
+      - login
+swagger: "2.0"

@@ -1,0 +1,23 @@
+[
+  {
+    "defense_point_id":1,
+    "id":1,
+    "wood":100,
+    "stone":20,
+    "gold":0
+  },
+  {
+    "defense_point_id":2,
+    "id":1,
+    "wood":0,
+    "stone":200,
+    "gold":0
+  },
+  {
+    "defense_point_id":3,
+    "id":1,
+    "wood":0,
+    "stone":0,
+    "gold":300
+  }
+]

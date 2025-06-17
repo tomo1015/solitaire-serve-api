@@ -1,0 +1,35 @@
+[
+  {
+    "defense_point_id":1,
+    "ID":1,
+    "type":"infantry",
+    "level":1,
+    "quantity":20,
+    "attack":1,
+    "defense":0,
+    "hit_rate":0.01,
+    "crit_rate":0
+  },
+  {
+    "defense_point_id":2,
+    "ID":1,
+    "type":"infantry",
+    "level":1,
+    "quantity":10,
+    "attack":1,
+    "defense":0,
+    "hit_rate":0.01,
+    "crit_rate":0
+  },
+  {
+    "defense_point_id":3,
+    "ID":1,
+    "type":"infantry",
+    "level":1,
+    "quantity":5,
+    "attack":1,
+    "defense":0,
+    "hit_rate":0.01,
+    "crit_rate":0
+  }
+]
