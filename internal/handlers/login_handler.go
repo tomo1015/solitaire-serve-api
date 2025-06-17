@@ -77,6 +77,9 @@ func GetSessionForPlatformId(platformId int) models.Session {
 		return models.Session{}
 	}
 
+	//生成されたuser_idを取得
+	playerId = newSession.UserID
+
 	//シャードキー生成
 	newSession.ShardKey = GetShardKeyForUserId(newSession.UserID)
 	if err := db.DB.Save(&newSession).Error; err != nil {
