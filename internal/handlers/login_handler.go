@@ -15,6 +15,8 @@ type GetGameTokenRequest struct {
 	PlatFormID int `json:"platformId"`
 }
 
+var playerId int //ユーザーID
+
 // @Summary ゲームトークン取得
 // @Description プラットフォームIDに対応した接続情報を作成し、ゲームトークンを生成する
 // @Tags login
@@ -44,6 +46,7 @@ func GetGameTokenHandler(c *gin.Context) {
 		return
 	}
 
+	playerId = session.UserID
 	c.JSON(http.StatusOK, gin.H{"game_token": session.GameToken})
 }
 

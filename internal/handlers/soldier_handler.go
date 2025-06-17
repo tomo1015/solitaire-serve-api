@@ -2,32 +2,59 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"solitaire-serve-api/internal/models"
 	"solitaire-serve-api/storage"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type TrainRequest struct {
-	PlayerID string `json:"player_id"` //プレイヤーID
-	Type     string `json:"type"`      //兵士タイプ
-	Quantity int    `json:"quantity"`  //訓練数
+	Type     string `json:"type"`     //兵士タイプ
+	Quantity int    `json:"quantity"` //訓練数
 }
 
-// 兵士訓練実行API
-func TrainHandler(w http.ResponseWriter, r *http.Request) {
+// @Summary 兵士一覧
+// @Description 訓練できる兵士の一覧
+// @Tags soldier
+// @Accept json
+// @Produce json
+// @Param body body TrainListRequest true "PlayerID"
+// @Success 200 {object}
+// @Failure 400 {string} string "invalid request or player is not found"
+// @Router /soldier/list [post]
+func GetSoldiersHandler(c *gin.Context) {
+	//ストレージからプレイヤー情報を取得
+	player := storage.GetPlayer(playerId)
+	if player == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
+		return
+	}
+}
+
+// @Summary 兵士一覧
+// @Description 訓練できる兵士の一覧
+// @Tags soldier
+// @Accept json
+// @Produce json
+// @Param body body TrainListRequest true "PlayerID"
+// @Success 200 {object} true "is_ok"
+// @Failure 400 {string} string "invalid request or player is not found"
+// @Router /soldier/list [post]
+func TrainHandler(c *gin.Context) {
 	var req TrainRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid Request", http.StatusBadRequest)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		//必要な情報がないのでエラー
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
 	//ストレージからプレイヤー情報を取得
-	player := storage.GetPlayer(req.PlayerID)
+	player := storage.GetPlayer(playerId)
 	if player == nil {
-		http.Error(w, "player is not found", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return
 	}
 
@@ -55,19 +82,7 @@ func TrainHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("training started"))
-}
-
-// 兵士の一覧取得API
-func GetSoldiersHandler(w http.ResponseWriter, r *http.Request) {
-	playerID := r.URL.Query().Get("player_id")
-	player := storage.GetPlayer(playerID)
-
-	if player == nil {
-		http.NotFound(w, r)
-		return
-	}
+	c.JSON(http.StatusOK, gin.H{"is_ok": true})
 }
 
 // DBに情報を追加

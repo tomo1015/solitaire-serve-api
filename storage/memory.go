@@ -10,7 +10,7 @@ var Attacks []*models.Attack                  //攻撃情報
 var DefensePoints []*models.DefensePoint      //防衛拠点の位置
 
 // プレイヤーをDBから取得
-func GetPlayer(id string) *models.Player {
+func GetPlayer(id int) *models.Player {
 	var player models.Player
 	result := db.DB.First(&player, "id = ?", id)
 	if result.Error != nil {
