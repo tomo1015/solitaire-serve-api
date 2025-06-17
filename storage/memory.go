@@ -27,7 +27,7 @@ func SavePlayer(player *models.Player) {
 // 指定された座標に存在する防衛拠点を検索する
 func FindDefensePointByLocation(x, y int) *models.DefensePoint {
 	for _, dp := range DefensePoints {
-		if dp.Location.X == x && dp.Location.Y == y {
+		if dp.LocationX == x && dp.LocationY == y {
 			return dp
 		}
 	}

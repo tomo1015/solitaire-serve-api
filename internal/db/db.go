@@ -2,6 +2,7 @@ package db
 
 import (
 	"log"
+	"solitaire-serve-api/internal/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -18,4 +19,6 @@ func Init() {
 	}
 
 	log.Println("DB接続成功")
+
+	DB.AutoMigrate(&models.DefensePoint{}, &models.BattleSoldier{}, &models.Resources{})
 }

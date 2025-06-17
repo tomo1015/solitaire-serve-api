@@ -11,11 +11,12 @@ import (
 type rawDefensePoint struct {
 	ID           int                    `json:"point_id"`
 	Name         string                 `json:"name"`
-	Location     models.WorldMap        `json:"location"`
+	LocationX    int                    `json:"locationX"`
+	LocationY    int                    `json:"locationY"`
 	NPCName      string                 `json:"npc_name"`
 	Soldiers     []models.BattleSoldier `json:"soldiers"`
 	LocationType string                 `json:"type"`
-	Loot         models.Resources       `json:"loot"`
+	Loot         []models.Resources     `json:"loot"`
 	Difficulty   int                    `json:"difficulty"`
 }
 
@@ -33,25 +34,24 @@ func LoadDefensePointFromJson(filepath string) error {
 	}
 
 	for _, r := range raws {
-		lootBytes, err := json.Marshal(r.Loot)
-		if err != nil {
-			log.Printf("loot material error", err)
-			continue
-		}
-
 		soldiers := make([]*models.BattleSoldier, len(r.Soldiers))
 		for i := range r.Soldiers {
 			soldiers[i] = &r.Soldiers[i]
 		}
 
+		resources := make([]*models.Resources, len(r.Loot))
+		for i := range r.Loot {
+			resources[i] = &r.Loot[i]
+		}
+
 		dp := models.DefensePoint{
 			ID:           r.ID,
 			Name:         r.Name,
-			Location:     r.Location,
+			LocationX:    r.LocationX,
+			LocationY:    r.LocationY,
 			NPCName:      r.NPCName,
 			Soldiers:     soldiers,
-			Loot:         r.Loot,
-			LootJson:     string(lootBytes),
+			Loot:         resources,
 			LocationType: r.LocationType,
 			Difficulty:   r.Difficulty,
 		}

@@ -2,13 +2,12 @@
   {
     "point_id":1,
     "name": "森の砦",
-    "location": { "x": 10, "y": 5 },
+    "locationX": 10,
+    "locationY": 5 ,
     "npc_name":"盗賊1",
-    "soldiers": [
-      { "type": "infantry", "level": 1, "quantity": 20 }
-    ],
     "type": "forest",
-    "loot": { "wood": 100, "stone": 20, "gold": 5 },
-    "difficulty": 1
+    "lootID":1,
+    "difficulty": 1,
+    "soldiersID":1
   }
 ]

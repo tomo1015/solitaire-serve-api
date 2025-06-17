@@ -1,6 +1,7 @@
 package models
 
 type Resources struct {
+	ID    int `json:"id"`
 	Wood  int `json:"wood"`  //木材
 	Stone int `json:"stone"` //石材
 	Gold  int `json:"gold"`  //金
