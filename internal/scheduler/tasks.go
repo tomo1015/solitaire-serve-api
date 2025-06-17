@@ -16,11 +16,11 @@ func Start() {
 			//資源を時間経過で追加する
 			for _, b := range p.Buildings {
 				switch b.ResourceType {
-				case "wood":
+				case 1:
 					p.Resources.Wood += b.Production
-				case "stone":
+				case 2:
 					p.Resources.Stone += b.Production
-				case "gold":
+				case 3:
 					p.Resources.Gold += b.Production
 				}
 			}

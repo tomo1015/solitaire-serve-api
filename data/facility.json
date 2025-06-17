@@ -1,0 +1,37 @@
+[
+  {
+    "facility_id":1,
+    "name": "伐採場",
+    "level": 1,
+    "production":100,
+    "resource_type":1
+  },
+  {
+    "facility_id":2,
+    "name": "石材場",
+    "level": 1,
+    "production":100,
+    "resource_type":2
+  },
+  {
+    "facility_id":3,
+    "name": "金鉱山",
+    "level": 1,
+    "production":100,
+    "resource_type":3
+  },
+  {
+    "facility_id":4,
+    "name": "兵舎",
+    "level": 1,
+    "production":0,
+    "resource_type":0
+  },
+  {
+    "facility_id":5,
+    "name": "倉庫",
+    "level": 1,
+    "production":0,
+    "resource_type":0
+  }
+]

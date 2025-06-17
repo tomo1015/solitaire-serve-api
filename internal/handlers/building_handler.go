@@ -46,19 +46,19 @@ func FacilityHandler(c *gin.Context) {
 	cost := tmpBuilding.UpgradeCost()
 	//コストの消費と施設ごとの生産量を設定
 	production := 1
-	resource_type := "wood"
+	resource_type := 1
 	switch tmpBuilding.ResourceType {
-	case "wood":
+	case 1:
 		if player.Resources.Wood < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 		production = 5
-		resource_type = "wood"
+		resource_type = 1
 
 		player.Resources.Wood -= cost
 
-	case "stone":
+	case 2:
 		if player.Resources.Stone < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
@@ -66,9 +66,9 @@ func FacilityHandler(c *gin.Context) {
 		player.Resources.Stone -= cost
 
 		production = 3
-		resource_type = "stone"
+		resource_type = 2
 
-	case "gold":
+	case 3:
 		if player.Resources.Gold < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
@@ -77,7 +77,7 @@ func FacilityHandler(c *gin.Context) {
 		player.Resources.Gold -= cost
 
 		production = 2
-		resource_type = "gold"
+		resource_type = 3
 	}
 
 	//建築する建物情報をまとめる
@@ -157,7 +157,7 @@ func UpgradeFacilityHandler(c *gin.Context) {
 	cost := building.UpgradeCost()
 	//コストの消費
 	switch building.ResourceType {
-	case "wood":
+	case 1:
 		if player.Resources.Wood < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
@@ -165,14 +165,14 @@ func UpgradeFacilityHandler(c *gin.Context) {
 
 		player.Resources.Wood -= cost
 
-	case "stone":
+	case 2:
 		if player.Resources.Stone < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 		player.Resources.Stone -= cost
 
-	case "gold":
+	case 3:
 		if player.Resources.Gold < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return

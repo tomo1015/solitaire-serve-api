@@ -20,6 +20,14 @@ type rawDefensePoint struct {
 	Difficulty   int                    `json:"difficulty"`
 }
 
+type rawFacility struct {
+	facilityID   int    `json:"facility_id"`
+	Name         string `json:"name"`
+	Level        int    `json:"level"`
+	Production   int    `json:"production"`
+	ResourceType int    `json:"resource_type"`
+}
+
 func LoadDefensePointFromJson(filepath string) error {
 	data, err := os.ReadFile(filepath)
 	if err != nil {
@@ -72,6 +80,37 @@ func LoadDefensePointFromJson(filepath string) error {
 			if err := db.DB.Create(&soldier).Error; err != nil {
 				log.Printf("Failed to save soldier for %s: %v", r.Name, err)
 			}
+		}
+	}
+
+	return nil
+}
+
+func LoadFacilityFromJson(filepath string) error {
+	data, err := os.ReadFile(filepath)
+	if err != nil {
+		log.Printf("failed load json file", err)
+		return err
+	}
+
+	var raws []rawFacility
+	if err := json.Unmarshal(data, &raws); err != nil {
+		log.Printf("failed rawDefensePoint", err)
+		return err
+	}
+
+	for _, r := range raws {
+
+		dp := models.Building{
+			BuildingID:   r.facilityID,
+			Level:        r.Level,
+			Production:   r.Production,
+			ResourceType: r.ResourceType,
+		}
+
+		if err := db.DB.Create(&dp).Error; err != nil {
+			log.Printf("Failed to save facility %s: %v", r.Name, err)
+			continue
 		}
 	}
 

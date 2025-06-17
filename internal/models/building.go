@@ -8,7 +8,7 @@ type Building struct {
 	Level         int       `json:"level"`         //施設レベル（初期1)
 	Position      int       `json:"position"`      //建物の位置
 	Production    int       `json:"production"`    //施設ごとの生産量
-	ResourceType  string    `json:"resource_type"` //施設ごとに生産できる資源タイプ
+	ResourceType  int       `json:"resource_type"` //施設ごとに生産できる資源タイプ
 	LastCollected time.Time `json:"last_collected"`
 }
 
