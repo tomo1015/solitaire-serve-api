@@ -3,10 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
+	"solitaire-serve-api/docs"
 	"solitaire-serve-api/internal/db"
 	"solitaire-serve-api/internal/handlers"
 	"solitaire-serve-api/internal/scheduler"
 	"solitaire-serve-api/storage"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -19,17 +24,28 @@ func main() {
 	//防衛地点データをjsonから読み込む
 	storage.LoadDefensePointFromJson("data/defense_point.json")
 
+	//Ginのルーターを取得
+	r := gin.Default()
+
+	// docsパッケージ内の SwaggerInfo を使う（使わなければunusedになる）
+	docs.SwaggerInfo.BasePath = "/"
+
+	// SwaggerUIのルーティング
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	//エンドポイント
+	r.POST("/getGameToken", handlers.GetGameTokenHandler)
+	r.POST("/facility/create", handlers.FacilityHandler)
+	r.POST("/facility/list", handlers.FacilityListHandler)
+	r.POST("/facility/upgrade", handlers.UpgradeFacilityHandler)
+
 	//HTTPルーティング
-	http.HandleFunc("/getGameToken", handlers.GetGameTokenHandler) //ゲームトークン取得
-	http.HandleFunc("/player", handlers.HandlePlayer)              //プレイヤー取得
-	//http.HandleFunc("/attack", handlers.HandleAttack)
-	//http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
-	http.HandleFunc("/build", handlers.BuildHandler)             //施設を建築する
-	http.HandleFunc("/list", handlers.BuildingListHandler)       // 施設一覧
-	http.HandleFunc("/upgrade", handlers.UpgradeBuildingHandler) //施設のアップグレード
-	http.HandleFunc("/soldier", handlers.GetSoldiersHandler)     //兵士一覧
-	http.HandleFunc("/soldier/upgrade", handlers.TrainHandler)   //兵士の訓練
+	// http.HandleFunc("/player", handlers.HandlePlayer)              //プレイヤー取得
+	// //http.HandleFunc("/attack", handlers.HandleAttack)
+	// //http.HandleFunc("/leaderboard", handlers.HandleLeaderboard)  //リーダーボード
+	// http.HandleFunc("/soldier", handlers.GetSoldiersHandler)     //兵士一覧
+	// http.HandleFunc("/soldier/upgrade", handlers.TrainHandler)   //兵士の訓練
 
 	log.Println("サーバー起動: http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

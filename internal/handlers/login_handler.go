@@ -1,25 +1,34 @@
 package handlers
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 	"solitaire-serve-api/internal/db"
 	"solitaire-serve-api/internal/models"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-// ゲームトークンを生成して取得
-func GetGameTokenHandler(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		PlatFormID int `json:"platformId"`
-	}
+type GetGameTokenRequest struct {
+	PlatFormID int `json:"platformId"`
+}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+// @Summary ゲームトークン取得
+// @Description プラットフォームIDに対応した接続情報を作成し、ゲームトークンを生成する
+// @Tags login
+// @Accept json
+// @Produce json
+// @Param body body GetGameTokenRequest true "Platform ID"
+// @Success 200 {object} map[string]string "game_token"
+// @Failure 400 {string} string "bad Request or update Failed"
+// @Router /getGameToken [post]
+func GetGameTokenHandler(c *gin.Context) {
+	var req GetGameTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		//必要な情報がないのでエラー
-		http.Error(w, "bad Request", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
 	}
 
@@ -31,11 +40,11 @@ func GetGameTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 	session.GameToken = gameToken
 	if err := db.DB.Save(&session).Error; err != nil {
-		http.Error(w, "update session is failed", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "update failed"})
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{"game_token": session.GameToken})
+	c.JSON(http.StatusOK, gin.H{"game_token": session.GameToken})
 }
 
 // プラットフォームIDをもとに

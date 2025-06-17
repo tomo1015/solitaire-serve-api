@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"solitaire-serve-api/internal/models"
 	"solitaire-serve-api/storage"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
@@ -15,26 +15,36 @@ type BuildRequest struct {
 	Name     string `json:"name"`      //建物名
 }
 
+type FacilityListRequest struct {
+	PlayerID string `json:"player_id"`
+}
+
 type UpgradeRequest struct {
 	PlayerID   string `json:"player_id"`   //プレイヤーID
 	BuildingID string `json:"building_id"` //建物ID
 }
 
-// 施設を建築する
-func BuildHandler(w http.ResponseWriter, r *http.Request) {
+// @Summary 施設の建築を実行する
+// @Description プレイヤーが所持している資源を消費して施設の建築を実行する
+// @Tags facility
+// @Accept json
+// @Produce json
+// @Param body body BuildRequest true "PlayerID" "Name"
+// @Success 200 {object} models.Building "facilities"
+// @Failure 400 {string} string "invalid request or player is not found or resources not enough"
+// @Router /facility/create [post]
+func FacilityHandler(c *gin.Context) {
 	var req BuildRequest
-
-	//リクエストのエラーチェック
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, "invalid Request", http.StatusBadRequest)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		//必要な情報がないのでエラー
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
 	//ストレージからプレイヤー情報を取得
 	player := storage.GetPlayer(req.PlayerID)
 	if player == nil {
-		http.Error(w, "player is not found", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return
 	}
 
@@ -45,7 +55,7 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	switch tmpBuilding.ResourceType {
 	case "wood":
 		if player.Resources.Wood < cost {
-			http.Error(w, "resources not enough", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 
@@ -53,14 +63,14 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 
 	case "stone":
 		if player.Resources.Stone < cost {
-			http.Error(w, "resources not enough", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 		player.Resources.Stone -= cost
 
 	case "gold":
 		if player.Resources.Gold < cost {
-			http.Error(w, "resources not enough", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 
@@ -83,7 +93,7 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//建築する建物情報をまとめる
-	building := models.Building{
+	facilities := models.Building{
 		ID:            uuid.NewString(),
 		Name:          req.Name,
 		Level:         1,
@@ -94,42 +104,59 @@ func BuildHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//リストに追加した上で保存実施
-	player.Buildings = append(player.Buildings, building)
+	player.Buildings = append(player.Buildings, facilities)
 	storage.SavePlayer(player)
 
-	json.NewEncoder(w).Encode(building)
+	c.JSON(http.StatusOK, gin.H{"facilities": facilities})
 }
 
-// 施設一覧
-func BuildingListHandler(w http.ResponseWriter, r *http.Request) {
-	playerId := r.URL.Query().Get(("player_id"))
-	if playerId == "" {
-		http.Error(w, "player id is missing", http.StatusBadRequest)
+// @Summary 施設一覧
+// @Description プレイヤーが建築済みの施設を一覧で取得する
+// @Tags facility
+// @Accept json
+// @Produce json
+// @Param body body FacilityListRequest true "PlayerID"
+// @Success 200 {object} models.Building "facilities"
+// @Failure 400 {string} string "invalid request or player is not found"
+// @Router /facility/list [post]
+func FacilityListHandler(c *gin.Context) {
+	var req FacilityListRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		//必要な情報がないのでエラー
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
-	player := storage.GetPlayer(playerId)
+	player := storage.GetPlayer(req.PlayerID)
 	if player == nil {
-		http.Error(w, "player is not found", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return
 	}
 
-	json.NewEncoder(w).Encode(player.Buildings)
+	c.JSON(http.StatusOK, gin.H{"facilities": player.Buildings})
 }
 
-// 施設アップグレード
-func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
+// @Summary 施設アップグレード
+// @Description 施設のレベルアップを行う
+// @Tags facility
+// @Accept json
+// @Produce json
+// @Param body body FacilityListRequest true "PlayerID" "BuildingID"
+// @Success 200 {object} models.Building "facilities"
+// @Failure 400 {string} string "invalid request or player is not found"
+// @Router /facility/upgrade [post]
+func UpgradeFacilityHandler(c *gin.Context) {
 	var req UpgradeRequest
-	//リクエストパラメータのチェック
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid Request", http.StatusBadRequest)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		//必要な情報がないのでエラー
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
 	//プレイヤー情報を取得
 	player := storage.GetPlayer(req.PlayerID)
 	if player == nil {
-		http.Error(w, "player is not found", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "player is not found"})
 		return
 	}
 
@@ -143,7 +170,7 @@ func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if building == nil {
-		http.Error(w, "building not found", http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "building not found"})
 		return
 	}
 
@@ -153,7 +180,7 @@ func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
 	switch building.ResourceType {
 	case "wood":
 		if player.Resources.Wood < cost {
-			http.Error(w, "resources not enough", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 
@@ -161,14 +188,14 @@ func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
 
 	case "stone":
 		if player.Resources.Stone < cost {
-			http.Error(w, "resources not enough", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 		player.Resources.Stone -= cost
 
 	case "gold":
 		if player.Resources.Gold < cost {
-			http.Error(w, "resources not enough", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 
@@ -179,5 +206,5 @@ func UpgradeBuildingHandler(w http.ResponseWriter, r *http.Request) {
 	building.Level += 1
 	storage.SavePlayer(player)
 
-	json.NewEncoder(w).Encode(building)
+	c.JSON(http.StatusOK, gin.H{"facilities": building})
 }

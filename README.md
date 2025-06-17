@@ -70,19 +70,9 @@ solitaire-serve-api/
 ---
 
 ## 📘API仕様
-- プレイヤー作成
+セットアップを行い、サーバーを起動した後に以下のリンクで確認することができます。
 
-```bash
-curl -X POST http://localhost:8080/player \
-  -H "Content-Type: application/json" \
-  -d '{"id":"user123", "name":"Taro", "resources":100, "soldiers":10, "village":"StarterVille"}'
-```
-
-- プレイヤー情報の取得
-
-```bash
-curl http://localhost:8080/player?id=user123 #作成したユーザーIDを指定
-```
+http://localhost:8080/swagger/index.html#/
 ---
 
 ## 👤 担当範囲 / My Role
