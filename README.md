@@ -40,31 +40,52 @@ cd solitaire-serve-api
 go run main.go # サーバーの起動
 ```
 
-## 🏗️アーキテクチャ図
+## 🏗️構成図
 ```bash
 solitaire-serve-api/
-├── main.go
-├── db/
-│ ├─ db.go
-│ └─ game.sqlite
-├── scheduler/
-│ └─ tasks.go
-├── models/
-│ ├─ soldier.go
-│ ├─ worldMap.go
-│ ├─ player.go
-│ ├─ attack.go
-│ ├─ building.go
-│ └─ defensePoint.go
-├── handlers/
-│ ├─ attack_handler.go
-│ ├─ battle_handler.go
-│ ├─ building_handler.go
-│ ├─ leaderboard_handler.go
-│ ├─ player_handler.go
-│ └─ soldier_handler.go
-├── utils/
-│ └─ resource.go
+├─game.db
+├─go.mod
+├─go.sum
+├─main.go
+├─README.md
+├─data
+│  ├─defense_point.json
+│  ├─defense_resource.json
+│  └─defense_soldier.json
+├─docs
+│  ├─docs.go
+│  ├─swagger.json
+│  └─swagger.yaml
+├─internal
+│  ├─battle
+│  │ └─battle.go
+│  ├─db
+│  │ ├─db.go
+│  │ └─game.db
+│  ├─handlers
+│  │ ├─battle_handler.go
+│  │ ├─building_handler.go
+│  │ ├─leaderboard_handler.go
+│  │ ├─login_handler.go
+│  │ └─player_handler.go
+│  │ └─soldier_handler.go
+│  ├─leaderboard
+│  │ └─leaderboard.go
+│  ├─models
+│  │ ├─attack.go
+│  │ ├─building.go
+│  │ ├─defensePoint.go
+│  │ ├─player.go
+│  │ ├─session.go
+│  │ ├─soldier.go
+│  │ └─worldMap.go
+│  ├─scheduler
+│  │ └─tasks.go
+│  └─util
+│    └─resource.go
+└─storage
+   ├─init.go
+   └─memory.go
 
 ```
 ---
