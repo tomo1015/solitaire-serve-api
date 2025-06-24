@@ -1,10 +1,14 @@
 run:
   timeout: 5m
+  include:
+    - internal
+    - storage
+    - main.go
   skip-dirs:
-    - docs/swagger
-    - openapi
+    - docs/swagger   # Swagger生成物を除外
+    - openapi       # OpenAPI生成物を除外
   skip-files:
-    - ".*_gen.go"  # 生成コードも除外（任意）
+    - ".*_gen.go"   # 生成コードを除外（任意）
 
 linters:
   enable:
@@ -33,10 +37,4 @@ issues:
   exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck
-
-output:
-  format: colored-line-number
+  exclude-rule
