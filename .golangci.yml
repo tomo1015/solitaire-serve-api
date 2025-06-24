@@ -1,0 +1,42 @@
+run:
+  timeout: 5m
+  skip-dirs:
+    - docs/swagger
+    - openapi
+  skip-files:
+    - ".*_gen.go"  # 生成コードも除外（任意）
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - gosimple
+    - unused
+    - structcheck
+    - deadcode
+    - gofmt
+    - goimports
+    - revive
+    - ineffassign
+
+linters-settings:
+  revive:
+    ignore-generated-header: true
+    severity: warning
+    rules:
+      - name: var-naming
+        arguments:
+          allow-leading-underscore: true
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+
+output:
+  format: colored-line-number

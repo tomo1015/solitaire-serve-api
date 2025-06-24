@@ -5,7 +5,7 @@ on:
 
 jobs:
   lint:
-    name: Lint with golangci-lint and reviewdog
+    name: Lint with golangci-lint and reviewdog (targeted)
     runs-on: ubuntu-latest
 
     steps:
@@ -15,17 +15,18 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.24.4'
+          go-version: '1.24.4' # 適宜変更
 
       - name: Install tools
         run: |
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v1.53.3
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b ./bin
 
-      - name: Run golangci-lint with reviewdog
+      - name: Run golangci-lint on selected paths with reviewdog
         run: |
-          ./bin/golangci-lint run --out-format=checkstyle \
-          || true \
+          ./bin/golangci-lint run internal/ storage/ main.go \
+            --timeout=5m \
+            --out-format=checkstyle || true \
           | ./bin/reviewdog -f=checkstyle \
               -name="golangci-lint" \
               -reporter=github-pr-review \
