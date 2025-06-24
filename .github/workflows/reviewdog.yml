@@ -24,7 +24,7 @@ jobs:
 
       - name: Run golangci-lint and reviewdog
         run: |
-          timeout 5m ./bin/golangci-lint run internal/ storage/ main.go --out-format=checkstyle || true \
+          ./bin/golangci-lint run --timeout=5m --out-format=checkstyle || true \
           | ./bin/reviewdog -f=checkstyle \
               -name="golangci-lint" \
               -reporter=github-pr-review \
