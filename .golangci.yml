@@ -8,7 +8,7 @@ run:
     - docs/swagger
     - openapi
   skip-files:
-    - ".*_gen.go"  # 生成コードも除外（任意）
+    - ".*_gen.go"
 
 linters:
   enable:
