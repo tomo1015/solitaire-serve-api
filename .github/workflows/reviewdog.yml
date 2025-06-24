@@ -15,7 +15,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.24.4'
+          go-version: '1.24.4' # 必要に応じて変更
 
       - name: Install golangci-lint and reviewdog
         run: |
@@ -24,8 +24,7 @@ jobs:
 
       - name: Run golangci-lint and reviewdog
         run: |
-          ./bin/golangci-lint run internal/ storage/ main.go --out-format=checkstyle || true \
-          --timeout=5m \
+          timeout 5m ./bin/golangci-lint run internal/ storage/ main.go --out-format=checkstyle || true \
           | ./bin/reviewdog -f=checkstyle \
               -name="golangci-lint" \
               -reporter=github-pr-review \
