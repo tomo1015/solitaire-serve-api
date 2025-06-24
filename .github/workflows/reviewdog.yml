@@ -16,6 +16,9 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.24.4' # 必要に応じて変更
+          
+      - name: Dump .golangci.yml
+        run: cat -A .golangci.yml
 
       - name: Install golangci-lint and reviewdog
         run: |
