@@ -5,8 +5,9 @@ on:
 
 jobs:
   lint:
-    name: Run golangci-lint with reviewdog
+    name: Lint with golangci-lint and reviewdog
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -14,24 +15,20 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.24.4'
+          go-version: '1.24.4'  # 必要に応じて変更
 
-      - name: Install golangci-lint
+      - name: Install tools
         run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.53.3
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v1.53.3
+          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b ./bin
 
-      - name: Run golangci-lint
-        id: lint
+      - name: Run golangci-lint with reviewdog
         run: |
-          golangci-lint run --out-format=line-number > result.log || true
-          cat result.log
-
-      - name: Run reviewdog
-        uses: reviewdog/reviewdog@v0.14.0
-        with:
-          name: golangci-lint
-          reporter: github-pr-review
-          filter-mode: diff_context
-          fail-on-error: false
-          level: warning
-          output: result.log
+          ./bin/golangci-lint run --out-format=line-number \
+          | ./bin/reviewdog -f=golangci-lint \
+              -name="golangci-lint" \
+              -reporter=github-pr-review \
+              -filter-mode=diff_context \
+              -fail-on-error=false
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
