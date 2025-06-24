@@ -20,17 +20,17 @@ func CollectResources(player *models.Player) {
 
 		//施設ごとに資源をそれぞれ加算する
 		switch b.ResourceType {
-		case "wood":
+		case 1:
 			player.Resources.Wood += earned
 			if player.Resources.Wood > capacity {
 				player.Resources.Wood = capacity
 			}
-		case "stone":
+		case 2:
 			player.Resources.Stone += earned
 			if player.Resources.Stone > capacity {
 				player.Resources.Stone = capacity
 			}
-		case "gold":
+		case 3:
 			player.Resources.Gold += earned
 			if player.Resources.Gold > capacity {
 				player.Resources.Gold = capacity

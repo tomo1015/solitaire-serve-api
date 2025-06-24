@@ -7,15 +7,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type BuildRequest struct {
-	Name string `json:"name"` //建物名
+	BuildingID int `json:"building_id"` //建物名
 }
 
 type UpgradeRequest struct {
-	BuildingID string `json:"building_id"` //建物ID
+	BuildingID int `json:"building_id"` //建物ID
 }
 
 // @Summary 施設の建築を実行する
@@ -43,53 +42,47 @@ func FacilityHandler(c *gin.Context) {
 	}
 
 	//初期レベルの建設コスト計算
-	tmpBuilding := models.Building{Name: req.Name, Level: 1}
+	tmpBuilding := models.Building{BuildingID: req.BuildingID, Level: 1}
 	cost := tmpBuilding.UpgradeCost()
-	//コストの消費
+	//コストの消費と施設ごとの生産量を設定
+	production := 1
+	resource_type := 1
 	switch tmpBuilding.ResourceType {
-	case "wood":
+	case 1:
 		if player.Resources.Wood < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
+		production = 5
+		resource_type = 1
 
 		player.Resources.Wood -= cost
 
-	case "stone":
+	case 2:
 		if player.Resources.Stone < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 		player.Resources.Stone -= cost
 
-	case "gold":
+		production = 3
+		resource_type = 2
+
+	case 3:
 		if player.Resources.Gold < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 
 		player.Resources.Gold -= cost
-	}
 
-	//建築時に施設ごとの生産量を設定
-	production := 1
-	resource_type := "wood"
-	switch req.Name {
-	case "木材工場":
-		production = 5
-		resource_type = "wood"
-	case "石材工場":
-		production = 3
-		resource_type = "stone"
-	case "金鉱山":
 		production = 2
-		resource_type = "gold"
+		resource_type = 3
 	}
 
 	//建築する建物情報をまとめる
 	facilities := models.Building{
-		ID:            uuid.NewString(),
-		Name:          req.Name,
+		BuildingID:    req.BuildingID,
 		Level:         1,
 		Position:      len(player.Buildings),
 		Production:    production,
@@ -149,7 +142,7 @@ func UpgradeFacilityHandler(c *gin.Context) {
 	//プレイヤーの建物情報を取得
 	var building *models.Building
 	for i := range player.Buildings {
-		if player.Buildings[i].ID == req.BuildingID {
+		if player.Buildings[i].BuildingID == req.BuildingID {
 			building = &player.Buildings[i]
 			break
 		}
@@ -164,7 +157,7 @@ func UpgradeFacilityHandler(c *gin.Context) {
 	cost := building.UpgradeCost()
 	//コストの消費
 	switch building.ResourceType {
-	case "wood":
+	case 1:
 		if player.Resources.Wood < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
@@ -172,14 +165,14 @@ func UpgradeFacilityHandler(c *gin.Context) {
 
 		player.Resources.Wood -= cost
 
-	case "stone":
+	case 2:
 		if player.Resources.Stone < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return
 		}
 		player.Resources.Stone -= cost
 
-	case "gold":
+	case 3:
 		if player.Resources.Gold < cost {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "resources not enough"})
 			return

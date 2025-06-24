@@ -23,6 +23,7 @@ func main() {
 
 	//防衛地点データをjsonから読み込む
 	storage.LoadDefensePointFromJson("data/defense_point.json")
+	storage.LoadFacilityFromJson("data/facility.json")
 
 	//Ginのルーターを取得
 	r := gin.Default()
