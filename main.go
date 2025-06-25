@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"solitaire-serve-api/docs"
@@ -15,6 +16,11 @@ import (
 )
 
 func main() {
+	var unuserdVar int
+	fmt.Println("Hello World")
+	fmt.Println("PR Test")
+	badFunc()
+
 	//DB接続の追加
 	db.Init()
 
@@ -49,4 +55,8 @@ func main() {
 
 	log.Println("サーバー起動: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
+}
+
+func badFunc() {
+	fmt.Println("this function name should be camelCase") // ← lint warning
 }
