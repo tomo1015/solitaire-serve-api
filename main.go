@@ -18,6 +18,7 @@ import (
 func main() {
 	var unuserdVar int
 	fmt.Println("Hello World")
+	fmt.Println("PR Test")
 	badFunc()
 
 	//DB接続の追加
