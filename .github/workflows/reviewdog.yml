@@ -30,7 +30,7 @@ jobs:
           ./bin/golangci-lint run --timeout=5m --out-format=checkstyle --issues-exit-code=0 \
           | ./bin/reviewdog -f=checkstyle \
             -name="golangci-lint" \
-            -reporter=github-pr-check \
+            -reporter=github-pr-review \
             -filter-mode=diff_context \
             -fail-on-error=false
         env:
